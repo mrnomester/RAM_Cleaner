@@ -43,7 +43,7 @@
 
 ## Установка
 1. Разместите все файлы в соответствующих директориях :  
-\nas\Distrib\script\RAMCleaner (замените этот путь на свой внутри скриптов)
+\nas\Distrib\script\RAMCleaner (замените этот путь на свой внутри скриптов)  
 ├── RAMMap.exe  
 ├── Scripts\  
 │ ├── RAMCleaner.ps1  
