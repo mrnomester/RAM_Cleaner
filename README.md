@@ -44,12 +44,12 @@
 ## Установка
 1. Разместите все файлы в соответствующих директориях :
 \nas\Distrib\script\RAMCleaner (замените этот путь на свой внутри скриптов)
-├── RAMMap.exe
-├── Scripts\
-│ ├── RAMCleaner.ps1
-│ ├── Sync-RAMCleaner.ps1
-│ ├── hidden_start_cleaner.vbs
-│ └── hidden_start_sync.vbs
+├── RAMMap.exe  
+├── Scripts\  
+│ ├── RAMCleaner.ps1  
+│ ├── Sync-RAMCleaner.ps1  
+│ ├── hidden_start_cleaner.vbs  
+│ └── hidden_start_sync.vbs  
 └── debug\ (директория для ошибок копирования)  
 
 Настройте запуск `hidden_start_sync.vbs` на клиентских машинах для синфронизации файлов и `hidden_start_cleaner.vbs` для отчистки  
@@ -74,4 +74,4 @@
 - Запуск от имени SYSTEM с повышенными правами  
 Действия:
 - Запуск программы wscript.exe
-- //B "C:\Users\Public\RAMCleaner\hidden_start_cleaner.vbs" (это оставляем как есть, первый скрипт деплоит основной скрипт отчистки сюда)
+- Аргументы: //B "C:\Users\Public\RAMCleaner\hidden_start_cleaner.vbs" (это оставляем как есть, первый скрипт деплоит основной скрипт отчистки сюда)
