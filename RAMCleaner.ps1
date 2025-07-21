@@ -8,14 +8,15 @@
 Упрощенная версия для ночного выполнения:
 - Всегда выполняет полную очистку
 - Работает полностью скрыто без UI
-- Не сохраняет ненужные логи
+- Логи хранятся в сетевой папке
 #>
 
 # Конфигурация
-$scriptDir = "C:\Users\Public\RAMCleaner"
-$rammapPath = Join-Path $scriptDir "RAMMap.exe"
-$logPath = Join-Path $scriptDir "CleanupRAM.log"
-$lockFilePath = Join-Path $scriptDir "RAMCleaner.lock"
+$rammapPath = "\\nas\Distrib\script\RAMCleaner\RAMMap.exe"
+$logDir = "\\nas\Distrib\script\RAMCleaner\log\"
+$computerName = $env:COMPUTERNAME
+$logPath = Join-Path $logDir "$computerName.log"
+$lockFilePath = Join-Path $logDir "$computerName.lock"
 $maxLogSizeMB = 5
 
 # Константы
@@ -49,13 +50,12 @@ function Get-AvailableMemoryMB {
 
 # Инициализация окружения
 try {
-    if (-not (Test-Path $scriptDir)) {
-        New-Item -ItemType Directory -Path $scriptDir -Force -ErrorAction Stop | Out-Null
-        Log "Создана рабочая директория: $scriptDir"
+    # Создаем папку для логов если нужно
+    if (-not (Test-Path $logDir)) {
+        New-Item -ItemType Directory -Path $logDir -Force -ErrorAction Stop | Out-Null
     }
 }
 catch {
-    Write-EventLog -LogName Application -Source "RAMCleaner" -EventID 100 -EntryType Error -Message "Ошибка создания директории: $_"
     exit 1
 }
 
@@ -132,13 +132,6 @@ try {
     # 1. Очистка Standby List
     $exitCodes += Invoke-RAMMapClean -Operation "Очистка Standby List" -ArgsList @("/accepteula", "-Es")
     
-    # 2. Очистка Modified Page List - опасно пропадают несохраненные данные
-    # $exitCodes += Invoke-RAMMapClean -Operation "Очистка Modified Page List" -ArgsList @("/accepteula", "-Em")
-    
-    # 3. Очистка Working Sets - падает драйвер видяхи
-    # Start-Sleep -Seconds 3
-    # $exitCodes += Invoke-RAMMapClean -Operation "Очистка Working Sets" -ArgsList @("/accepteula", "-Ew")
-
     # Проверка результатов
     $success = ($exitCodes | Where-Object { $_ -ne 0 } | Measure-Object).Count -eq 0
     Log "Результат: $(if ($success) {'Успех'} else {'Ошибка'}) [Коды: $($exitCodes -join ', ')]"
@@ -166,7 +159,6 @@ catch {
     Log $errorMsg
 }
 finally {
-    # Исправлено: убрана лишняя скобка в условии
     if (Test-Path $lockFilePath) {
         Remove-Item $lockFilePath -Force -ErrorAction SilentlyContinue
     }
